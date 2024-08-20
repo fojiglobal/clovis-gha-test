@@ -34,6 +34,8 @@ jobs:
       - name: Install Dependencies
         run: |
           npm install
+      - name: Get Context Data
+        run: echo "${{ toJSON(github) }}"
 
   test:
     runs-on: ubuntu-latest
