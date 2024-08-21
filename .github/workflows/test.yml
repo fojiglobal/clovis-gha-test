@@ -35,13 +35,36 @@ jobs:
       - name: Install Dependencies
         run: |
           npm install
+      - name: Get Context Data
+        run: echo "${{ toJSON(github) }}"
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      
+      - name: Install Dependencies
+        run: |
+          npm install
 
       - name: Execute Automated Test
         run: npm test
+  
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      
+      - name: Install Dependencies
+        run: |
+          npm install
 
-  # test:
-  #   runs-on: ubuntu-latest
-  #   needs: build
-  #   steps:
-  #     - name: Execute Automated Test
-  #       run: npm test
+      - name: Build and Compile Code
+        run: npm run build 
+
+      - name: Deploy
+        run: echo "Deployment Complete"
