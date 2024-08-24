@@ -66,12 +66,16 @@ jobs:
       - name: Build and Compile Code
         run: npm run build 
 
-      - name: Upload Artifacts
+      - name: try zip the test result folder
         #if: failure()
+        run: |
+          zip -r dist.zip dist
+
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
-          path: dist
+          path: dist.zip
         
       - name: Deploy
         run: echo "Deployment Complete"
