@@ -67,7 +67,7 @@ jobs:
         run: npm run build 
 
       - name: try zip the test result folder
-        #if: failure()
+        if: failure()
         run: |
           zip -r dist.zip dist
 
