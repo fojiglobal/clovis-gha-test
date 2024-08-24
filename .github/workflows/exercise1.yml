@@ -65,5 +65,10 @@ jobs:
       - name: Build and Compile Code
         run: npm run build 
 
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist
+        
       - name: Deploy
         run: echo "Deployment Complete"
