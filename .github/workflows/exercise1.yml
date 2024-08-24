@@ -71,7 +71,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
-          path: dist.zip
+          path: dist
         
       - name: Deploy
         run: echo "Deployment Complete"
