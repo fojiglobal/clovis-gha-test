@@ -64,11 +64,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
             name: build-artifacts
+
+      - name: Unzip Artifacts
+        run: unzip dist.zip -d dist
+
       - name: Output Contents
         run: ls -l
+
       - name: Deploy
         run: echo "Deployment Complete"
