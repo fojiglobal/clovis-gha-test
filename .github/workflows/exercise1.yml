@@ -1,6 +1,6 @@
-# This is a basic workflow to help you get started with Actions
+# This is a basic workflow to help you get started with Actions ok now
 
-name: CI
+name: Exercise1
 
 # Controls when the workflow will run
 on: #workflow_dispatch
@@ -8,7 +8,7 @@ on: #workflow_dispatch
   # push:
   #   branches: [ "main" ]
   workflow_dispatch:
-    
+  
   pull_request:
     branches: [ "main" ]
 
@@ -18,10 +18,20 @@ on: #workflow_dispatch
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Install Dependencies
+        run: |
+          npm install
+      - name: Execute Automated Test
+        run: npm test
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
+    needs: test
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -35,36 +45,36 @@ jobs:
       - name: Install Dependencies
         run: |
           npm install
-      - name: Get Context Data
-        run: echo "${{ toJSON(github) }}"
+      - name: Build Job and Generate Artifacts
+        run: |
+          npm run build
+      - name: try zip the test result folder
+        run: |
+          zip -r dist.zip dist
 
-  test:
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist.zip
+      # - name: Get Context Data
+      #   run: echo "${{ toJSON(github) }}"
+
+  deploy:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
       
-      - name: Install Dependencies
-        run: |
-          npm install
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+            name: build-artifacts
 
-      - name: Execute Automated Test
-        run: npm test
-  
-  deploy:
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-      
-      - name: Install Dependencies
-        run: |
-          npm install
+      - name: Unzip Artifacts
+        run: unzip dist.zip -d dist
 
-      - name: Build and Compile Code
-        run: npm run build 
+      - name: Output Contents
+        run: ls -l
 
       - name: Deploy
         run: echo "Deployment Complete"
